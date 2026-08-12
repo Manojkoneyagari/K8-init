@@ -2,7 +2,7 @@
 
 
 if [ -f /secrets/secret.txt ]; then
-    Password= $(cat /secrets/secret.txt)
+    Password=$(cat /secrets/secret.txt)
     echo " Password accessed "
 else
     echo " can't find the file"
