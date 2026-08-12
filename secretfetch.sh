@@ -11,3 +11,5 @@ fi
 
 export MYSQL_ROOT_PASSWORD=$Password
 rm /secrets/secret.txt
+
+exec nginx -g "daemon off;"
