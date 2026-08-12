@@ -41,6 +41,7 @@ spec:
       containers:
       - name: nginx-secret
         image: manojkoneyagari/secret
+        imagePullPolicy: Always
         resources:
           requests:
             cpu: "120m"
