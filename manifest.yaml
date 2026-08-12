@@ -35,8 +35,8 @@ spec:
           mountPath: /secrets
 
       containers:
-      - name: nginx
-        image: nginx
+      - name: nginx-secret
+        image: manojkoneyagari/secret
         resources:
           requests:
             cpu: "120m"
