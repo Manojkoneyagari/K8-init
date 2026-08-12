@@ -20,6 +20,7 @@ spec:
         project: roboshop
         env: dev
     spec:
+      serviceAccountName: mysql-secret
       initContainers:
       - name: secret-reader
         image: amazon/aws-cli
