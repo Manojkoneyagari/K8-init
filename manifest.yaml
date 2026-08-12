@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: deployment-init
+  labels:
+    project: roboshop
+    purpose: nginx 
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: roboshop
+      env: dev
+  
+  template:
+    metadata:
+      labels:
+        project: roboshop
+        env: dev
+    spec:
+      initContainers:
+      - name: secret-reader
+        image: amazon/aws-cli
+        command:  
+          - sh 
+          - -c 
+          - |
+              aws secretsmanager get-secret-value --secret-id roboshop/dev/secret \
+              --query SecretString --output text | jq -r '.MYSQL_ROOT_PASSWORD' > /secrets/secret.txt
+              echo " secret fetched successfully"
+
+        volumeMounts:
+        - name: vol-secret
+          mountPath: /secrets
+
+      containers:
+      - name: nginx
+        image: nginx
+        resources:
+          requests:
+            cpu: "120m"
+            memory: "150Mi"
+          limits:
+            cpu: "150m"
+            memory: "150Mi"
+
+        volumeMounts:
+        - name: vol-secret
+          mountPath: /secrets
+
+      volumes: 
+      - name: vol-secret
+        emptyDir: {}
+
+#aws secretsmanager get-secret-value --secret-id MySecret --query SecretString --output text
+#roboshop/dev/secret
+
+---
+apiVersion: v1
+kind: Service 
+metadata:
+  name: service 
+  labels:
+    project: roboshop
+    purpose: service
+spec:
+  selector:
+    project: roboshop
+    env: dev
+
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+
+
+
