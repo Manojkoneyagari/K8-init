@@ -24,13 +24,15 @@ spec:
       initContainers:
       - name: secret-reader
         image: amazon/aws-cli
-        command:  
-          - sh 
-          - -c 
-          - |
-            aws secretsmanager get-secret-value --secret-id roboshop/dev/secret \
-            --query SecretString --output text | jq -r '.MYSQL_ROOT_PASSWORD' > /secrets/secret.txt
-            echo " secret fetched successfully"
+        command:
+        - sh
+        - -c
+        - |
+          set -e
+          aws secretsmanager get-secret-value --secret-id roboshop/dev/secret --query SecretString --output text | jq -r '.MYSQL_ROOT_PASSWORD' > /secrets/secret.txt
+          echo "secret fetched successfully"
+          ls -l /secrets/secret.txt
+          cat /secrets/secret.txt
 
         volumeMounts:
         - name: vol-secret
